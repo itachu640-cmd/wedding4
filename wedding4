@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Свадебное Приглашение — Эко Бохо</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600&family=Playfair+Display:ital,wght@0,400;1,400&display=swap');
+
+        :root {
+            --bg-color: #f4f6f4;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --text-main: #3d4a41;
+            --text-muted: #7a8a80;
+            --accent: #8fa89b;
+        }
+
+        body {
+            margin: 0; padding: 0;
+            font-family: 'Comfortaa', cursive;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; overflow: hidden; position: relative;
+        }
+
+        /* Контейнер для летающих листьев */
+        #bg-particles {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none; z-index: 1;
+        }
+
+        /* Анимация падающей листвы */
+        .leaf {
+            position: absolute; user-select: none; opacity: 0;
+            top: -50px; animation: fallAndSway linear infinite;
+        }
+
+        @keyframes fallAndSway {
+            0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+            15% { opacity: 0.75; }
+            85% { opacity: 0.75; }
+            100% { transform: translateY(105vh) translateX(60px) rotate(180deg); opacity: 0; }
+        }
+
+        /* Экраны */
+        .screen {
+            width: 100%; max-width: 420px; min-height: 100vh;
+            padding: 20px; box-sizing: border-box;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            position: relative; z-index: 2; transition: all 0.6s ease;
+        }
+        .hidden { display: none !important; }
+        .fade-out { opacity: 0; transform: translateY(-20px); }
+        .fade-in { animation: softZoom 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+
+        @keyframes softZoom {
+            from { opacity: 0; transform: scale(0.92); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        /* Эко-кнопка */
+        .main-btn {
+            background: var(--text-main); border: none; color: white;
+            padding: 14px 35px; font-size: 0.9rem; border-radius: 12px; cursor: pointer;
+            box-shadow: 0 5px 15px rgba(61,74,65,0.2); transition: all 0.3s;
+            letter-spacing: 1px;
+        }
+        .main-btn:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 8px 20px rgba(143,168,155,0.4); }
+
+        /* Эстетичная карточка */
+        .card-container {
+            background: var(--card-bg); padding: 45px 20px;
+            border-radius: 24px; text-align: center; width: 100%; box-sizing: border-box;
+            box-shadow: 0 12px 30px rgba(61,74,65,0.06);
+            border: 1px solid rgba(255,255,255,0.8);
+            backdrop-filter: blur(6px);
+        }
+        .names { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 400; color: var(--text-main); margin: 10px 0; }
+        .divider { color: var(--accent); margin: 15px 0; font-size: 1.1rem; }
+
+        /* Таймер */
+        .countdown { display: flex; justify-content: space-around; margin: 25px 0; }
+        .time-block {
+            background: rgba(255, 255, 255, 0.8); width: 66px; height: 66px;
+            display: flex; flex-direction: column; justify-content: center; border-radius: 14px;
+            border: 1px solid #e1e6e2;
+        }
+        .time-block span { font-size: 1.3rem; font-weight: 600; color: var(--text-main); }
+        .time-block label { font-size: 0.55rem; color: var(--text-muted); font-weight: bold; margin-top: 2px; }
+        .time-separator { align-self: center; font-weight: bold; color: var(--accent); }
+
+        /* Детали */
+        .info-box { background: rgba(255, 255, 255, 0.5); border-radius: 16px; padding: 15px; border: 1px solid #e1e6e2; }
+        .details-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+        h3 { font-size: 0.75rem; color: var(--text-muted); letter-spacing: 1px; margin: 0 0 5px 0; }
+    </style>
+</head>
+<body>
+
+    <!-- Сюда JavaScript сыплет листву -->
+    <div id="bg-particles"></div>
+
+    <!-- ЭКРАН 1: КОНВЕРТ -->
+    <div id="envelope-screen" class="screen">
+        <div style="text-align: center;">
+            <div style="font-size: 3.5rem; margin-bottom: 15px; filter: drop-shadow(0 5px 5px rgba(0,0,0,0.05));">🌿</div>
+            <p style="letter-spacing: 2px; color: var(--text-muted); font-size: 0.85rem; font-weight: 600;">ПРИГЛАШЕНИЕ ДЛЯ</p>
+            <h1 style="font-family: 'Playfair Display', serif; font-size: 2.6rem; font-weight: 400; margin-top: 5px; color: var(--text-main); margin-bottom: 45px;">Дорогого Гостя</h1>
+            <button id="open-btn" class="main-btn">Открыть приглашение</button>
+        </div>
+    </div>
+
+    <!-- ЭКРАН 2: ИНФОРМАЦИЯ -->
+    <div id="info-screen" class="screen hidden">
+        <div class="card-container">
+            <p style="font-size: 0.7rem; letter-spacing: 3px; color: var(--text-muted); font-weight: 600; margin-top: 0;">СВАДЕБНОЕ ПРИГЛАШЕНИЕ</p>
+            <p style="margin: 5px 0; font-size: 1rem;">Дорогой Гость,</p>
+            <h2 class="names">Влад & Диана</h2>
+            <p style="font-size: 0.85rem; line-height: 1.6; color: #4e5c52; padding: 0 5px;">С огромной радостью и любовью приглашаем вас разделить с нами этот особенный день нашей жизни</p>
+
+            <div class="divider">🌿 • 🕊️ • 🌿</div>
+
+            <!-- Таймер -->
+            <section class="timer-section">
+                <p style="font-size: 0.65rem; letter-spacing: 1.5px; color: var(--text-muted); font-weight: 600; margin: 0;">ДО НАЧАЛА ОСТАЛОСЬ</p>
+                <div class="countdown">
+                    <div class="time-block"><span id="days">00</span><label>ДНЕЙ</label></div>
+                    <div class="time-separator">:</div>
+                    <div class="time-block"><span id="hours">00</span><label>ЧАСОВ</label></div>
+                    <div class="time-separator">:</div>
+                    <div class="time-block"><span id="minutes">00</span><label>МИНУТ</label></div>
+                    <div class="time-separator">:</div>
+                    <div class="time-block"><span id="seconds">00</span><label>СЕКУНД</label></div>
+                </div>
+            </section>
+
+            <!-- Инфо-блоки -->
+            <div class="details-grid">
+                <div class="info-box">
+                    <h3>ДАТА</h3>
+                    <p style="font-weight: 600; margin: 0; color: var(--text-main); font-size: 1.05rem;">20 сентября</p>
+                    <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">2027 года</p>
+                </div>
+                <div class="info-box">
+                    <h3>ВРЕМЯ</h3>
+                    <p style="margin: 0; font-size: 0.8rem; font-weight: 600;">Никах — 14:00</p>
+                    <p style="margin: 4px 0 0 0; font-size: 0.8rem; font-weight: 600;">Банкет — 18:00</p>
+                </div>
+            </div>
+
+            <!-- Место -->
+            <section class="info-box">
+                <h3>МЕСТО ПРОВЕДЕНИЯ</h3>
+                <p style="font-weight: 600; margin: 0 0 4px 0; font-size: 1rem;">Свадебный зал «Жемчужина»</p>
+                <p style="margin: 0; font-size: 0.8rem; color: var(--text-muted);">ул. Навои 12, Ташкент</p>
+            </section>
+
+            <p style="margin-top: 35px; font-size: 0.8rem; color: var(--text-muted);">Ваше присутствие — лучший подарок для нас 🌱</p>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Кнопка открытия
+            document.getElementById("open-btn").addEventListener("click", () => {
+                const env = document.getElementById("envelope-screen");
+                const info = document.getElementById("info-screen");
+                env.classList.add("fade-out");
+                setTimeout(() => {
+                    env.classList.add("hidden");
+                    info.classList.remove("hidden");
+                    info.classList.add("fade-in");
+                }, 500);
+            });
+
+            // Таймер
+            const targetDate = new Date("September 20, 2027 14:00:00").getTime();
+            setInterval(() => {
+                const now = new Date().getTime();
+                const diff = targetDate - now;
+                if (diff < 0) return;
+                document.getElementById("days").textContent = String(Math.floor(diff / (1000 * 60 * 60 * 24))).padStart(2, '0');
+                document.getElementById("hours").textContent = String(Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60))).padStart(2, '0');
+                document.getElementById("minutes").textContent = String(Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60))).padStart(2, '0');
+                document.getElementById("seconds").textContent = String(Math.floor((diff % (1000 * 60)) / 1000)).padStart(2, '0');
+            }, 1000);
+
+            // Генератор эко-частиц (Листья и блестки)
+            const container = document.getElementById("bg-particles");
+            const ecoItems = ['🍃', '🌿', '✨', '🍃', '💚'];
+
+            function createLeaf() {
+                const leaf = document.createElement("div");
+                leaf.classList.add("leaf");
+                leaf.innerText = ecoItems[Math.floor(Math.random() * ecoItems.length)];
+                leaf.style.left = Math.random() * 100 + "vw";
+                leaf.style.fontSize = Math.random() * (26 - 14) + 14 + "px";
+                leaf.style.animationDuration = Math.random() * (9 - 5) + 5 + "s";
+                container.appendChild(leaf);
+                setTimeout(() => { leaf.remove(); }, 9000);
+            }
+            setInterval(createLeaf, 350);
+        });
+    </script>
+</body>
+</html>
